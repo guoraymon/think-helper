@@ -1,4 +1,5 @@
 <?php
+
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
@@ -8,10 +9,8 @@
 // +----------------------------------------------------------------------
 // | Author: yunwuxin <448901948@qq.com>
 // +----------------------------------------------------------------------
-
 use think\Collection;
 use think\helper\Arr;
-
 if (!function_exists('throw_if')) {
     /**
      * 按条件抛异常
@@ -26,13 +25,11 @@ if (!function_exists('throw_if')) {
     function throw_if($condition, $exception, ...$parameters)
     {
         if ($condition) {
-            throw (is_string($exception) ? new $exception(...$parameters) : $exception);
+            throw is_string($exception) ? new $exception(...$parameters) : $exception;
         }
-
         return $condition;
     }
 }
-
 if (!function_exists('throw_unless')) {
     /**
      * 按条件抛异常
@@ -46,13 +43,11 @@ if (!function_exists('throw_unless')) {
     function throw_unless($condition, $exception, ...$parameters)
     {
         if (!$condition) {
-            throw (is_string($exception) ? new $exception(...$parameters) : $exception);
+            throw is_string($exception) ? new $exception(...$parameters) : $exception;
         }
-
         return $condition;
     }
 }
-
 if (!function_exists('tap')) {
     /**
      * 对一个值调用给定的闭包，然后返回该值
@@ -66,13 +61,10 @@ if (!function_exists('tap')) {
         if (is_null($callback)) {
             return $value;
         }
-
         $callback($value);
-
         return $value;
     }
 }
-
 if (!function_exists('value')) {
     /**
      * Return the default value of the given value.
@@ -85,7 +77,6 @@ if (!function_exists('value')) {
         return $value instanceof Closure ? $value() : $value;
     }
 }
-
 if (!function_exists('collect')) {
     /**
      * Create a collection from the given value.
@@ -98,7 +89,6 @@ if (!function_exists('collect')) {
         return new Collection($value);
     }
 }
-
 if (!function_exists('data_fill')) {
     /**
      * Fill in data where it's missing.
@@ -113,7 +103,6 @@ if (!function_exists('data_fill')) {
         return data_set($target, $key, $value, false);
     }
 }
-
 if (!function_exists('data_get')) {
     /**
      * Get an item from an array or object using "dot" notation.
@@ -128,9 +117,7 @@ if (!function_exists('data_get')) {
         if (is_null($key)) {
             return $target;
         }
-
         $key = is_array($key) ? $key : explode('.', $key);
-
         while (!is_null($segment = array_shift($key))) {
             if ('*' === $segment) {
                 if ($target instanceof Collection) {
@@ -138,16 +125,12 @@ if (!function_exists('data_get')) {
                 } elseif (!is_array($target)) {
                     return value($default);
                 }
-
                 $result = [];
-
                 foreach ($target as $item) {
                     $result[] = data_get($item, $key);
                 }
-
                 return in_array('*', $key) ? Arr::collapse($result) : $result;
             }
-
             if (Arr::accessible($target) && Arr::exists($target, $segment)) {
                 $target = $target[$segment];
             } elseif (is_object($target) && isset($target->{$segment})) {
@@ -156,11 +139,9 @@ if (!function_exists('data_get')) {
                 return value($default);
             }
         }
-
         return $target;
     }
 }
-
 if (!function_exists('data_set')) {
     /**
      * Set an item on an array or object using dot notation.
@@ -174,12 +155,10 @@ if (!function_exists('data_set')) {
     function data_set(&$target, $key, $value, $overwrite = true)
     {
         $segments = is_array($key) ? $key : explode('.', $key);
-
         if (($segment = array_shift($segments)) === '*') {
             if (!Arr::accessible($target)) {
                 $target = [];
             }
-
             if ($segments) {
                 foreach ($target as &$inner) {
                     data_set($inner, $segments, $value, $overwrite);
@@ -194,7 +173,6 @@ if (!function_exists('data_set')) {
                 if (!Arr::exists($target, $segment)) {
                     $target[$segment] = [];
                 }
-
                 data_set($target[$segment], $segments, $value, $overwrite);
             } elseif ($overwrite || !Arr::exists($target, $segment)) {
                 $target[$segment] = $value;
@@ -204,25 +182,21 @@ if (!function_exists('data_set')) {
                 if (!isset($target->{$segment})) {
                     $target->{$segment} = [];
                 }
-
                 data_set($target->{$segment}, $segments, $value, $overwrite);
             } elseif ($overwrite || !isset($target->{$segment})) {
                 $target->{$segment} = $value;
             }
         } else {
             $target = [];
-
             if ($segments) {
                 data_set($target[$segment], $segments, $value, $overwrite);
             } elseif ($overwrite) {
                 $target[$segment] = $value;
             }
         }
-
         return $target;
     }
 }
-
 if (!function_exists('trait_uses_recursive')) {
     /**
      * 获取一个trait里所有引用到的trait
@@ -230,17 +204,15 @@ if (!function_exists('trait_uses_recursive')) {
      * @param string $trait Trait
      * @return array
      */
-    function trait_uses_recursive(string $trait): array
+    function trait_uses_recursive($trait)
     {
         $traits = class_uses($trait);
         foreach ($traits as $trait) {
             $traits += trait_uses_recursive($trait);
         }
-
         return $traits;
     }
 }
-
 if (!function_exists('class_basename')) {
     /**
      * 获取类名(不包含命名空间)
@@ -248,13 +220,12 @@ if (!function_exists('class_basename')) {
      * @param mixed $class 类名
      * @return string
      */
-    function class_basename($class): string
+    function class_basename($class)
     {
         $class = is_object($class) ? get_class($class) : $class;
         return basename(str_replace('\\', '/', $class));
     }
 }
-
 if (!function_exists('class_uses_recursive')) {
     /**
      *获取一个类里所有用到的trait，包括父类的
@@ -262,18 +233,16 @@ if (!function_exists('class_uses_recursive')) {
      * @param mixed $class 类名
      * @return array
      */
-    function class_uses_recursive($class): array
+    function class_uses_recursive($class)
     {
         if (is_object($class)) {
             $class = get_class($class);
         }
-
         $results = [];
         $classes = array_merge([$class => $class], class_parents($class));
         foreach ($classes as $class) {
             $results += trait_uses_recursive($class);
         }
-
         return array_unique($results);
     }
 }
